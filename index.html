@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Based Question Paper Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="background-effects">
+        <div class="cyber-grid"></div>
+        <div class="glow-orb orb-1"></div>
+        <div class="glow-orb orb-2"></div>
+        <div class="glow-orb orb-3"></div>
+        
+        <!-- Soft Background Blobs -->
+        <div class="bg-blob blob-1"></div>
+        <div class="bg-blob blob-2"></div>
+        <div class="bg-blob blob-3"></div>
+        
+        <!-- Background Robot Squad -->
+        <div class="bg-robot worker-1"></div>
+        <div class="bg-robot worker-2"></div>
+        <div class="bg-robot worker-3"></div>
+        <div class="bg-robot worker-4"></div>
+    </div>
+
+    <nav class="glass-nav">
+        <div class="nav-logo">Edu<span>AI</span></div>
+        <div class="nav-links">
+            <button class="nav-link active" data-section="home-section">Home</button>
+            <button class="nav-link" data-section="generator-section">Generator</button>
+            <button class="nav-link" data-section="history-section">History</button>
+            <button class="nav-link" id="nav-output-link" data-section="results-section" disabled>Output</button>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="content-column">
+            <!-- Home Section -->
+            <section id="home-section" class="view-section active">
+                <header class="hero-content">
+                    <div class="badge">Next-Gen Education Tool</div>
+                    <h1 class="title">AI-Based Question Paper Generator</h1>
+                    <p class="subtitle">Instantly generate high-quality, customized question papers for any subject using advanced artificial intelligence.</p>
+                    <button id="start-btn" class="primary-btn">
+                        <span>Start Generating</span>
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                    </button>
+                </header>
+            </section>
+
+        <!-- Generator Form Section -->
+        <section id="generator-section" class="view-section hidden">
+            <div class="glass-card">
+                <div class="card-header">
+                    <h2>Configure Your Paper</h2>
+                    <p>Provide the details below to generate tailored questions.</p>
+                </div>
+                <form id="generator-form" novalidate>
+                    <div id="form-error" class="error-msg hidden"></div>
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" name="subject" placeholder="e.g., Computer Science" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="topic">Topic</label>
+                        <input type="text" id="topic" name="topic" placeholder="e.g., Data Structures and Algorithms" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="difficulty">Difficulty</label>
+                            <div class="select-wrapper">
+                                <select id="difficulty" name="difficulty" required>
+                                    <option value="" disabled selected>Select Level</option>
+                                    <option value="Easy">Easy</option>
+                                    <option value="Medium">Medium</option>
+                                    <option value="Hard">Hard</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group half">
+                            <label for="num-questions">Number of Questions</label>
+                            <input type="number" id="num-questions" name="num-questions" min="1" max="50" placeholder="e.g., 10" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="question-type">Question Type</label>
+                        <div class="select-wrapper">
+                            <select id="question-type" name="question-type" required>
+                                <option value="" disabled selected>Select Type</option>
+                                <option value="Multiple Choice (MCQ)">Multiple Choice (MCQ)</option>
+                                <option value="Short Answer">Short Answer</option>
+                                <option value="Long Essay">Long Essay</option>
+                                <option value="True / False">True / False</option>
+                                <option value="Mixed">Mixed</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" id="back-to-home" class="secondary-btn">Back</button>
+                        <button type="submit" id="generate-btn" class="primary-btn">
+                            <span>Generate Questions</span>
+                            <svg class="magic-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.7 10.3a2.41 2.41 0 0 0 0 3.41l7.59 7.59a2.41 2.41 0 0 0 3.41 0l7.59-7.59a2.41 2.41 0 0 0 0-3.41l-7.59-7.59a2.41 2.41 0 0 0-3.41 0Z"></path><path d="m5 13 4-4"></path><path d="m14 13-4-4"></path><path d="m9 17 4-4"></path></svg>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Loading Section -->
+        <section id="loading-section" class="view-section hidden">
+            <div class="loader-container">
+                <div class="robot-loader">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="robot-svg">
+                        <rect x="3" y="11" width="18" height="10" rx="2"></rect>
+                        <circle cx="12" cy="5" r="2"></circle>
+                        <path d="M12 7v4"></path>
+                        <line x1="8" y1="16" x2="8.01" y2="16"></line>
+                        <line x1="16" y1="16" x2="16.01" y2="16"></line>
+                    </svg>
+                </div>
+                <h2>Generating your question paper...</h2>
+                <p>Analyzing syllabus, extracting key concepts, and formulating queries.</p>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section id="results-section" class="view-section hidden">
+            <div class="glass-card results-card">
+                <div class="card-header results-header">
+                    <div>
+                        <h2>Generated Question Paper</h2>
+                        <div id="paper-metadata" class="metadata-tags">
+                            <!-- Tags injected via JS -->
+                        </div>
+                    </div>
+                    <div class="action-buttons">
+                        <button id="copy-btn" class="icon-btn" title="Copy to Clipboard">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>
+                        </button>
+                        <button id="download-btn" class="icon-btn" title="Download PDF">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="questions-container" class="questions-list">
+                    <!-- Questions injected via JS -->
+                </div>
+
+                <div class="motivational-box">
+                    <p id="motivational-text">✨ Keep learning and believe in yourself. Every small step today builds your success tomorrow. Stay curious and keep growing.</p>
+                </div>
+
+                <div class="form-actions result-actions">
+                    <button type="button" id="start-over-btn" class="secondary-btn">Start Over</button>
+                    <button type="button" id="regenerate-btn" class="primary-btn">
+                        <span>Regenerate Paper</span>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path><polyline points="21 3 21 8 16 8"></polyline></svg>
+                    </button>
+                </div>
+            </div>
+        </section>
+        </div> <!-- End content-column -->
+        
+        <!-- Persistent Robot Visual -->
+        <div class="visual-column">
+            <div class="persistent-visual">
+                <img src="robot.png" alt="Futuristic AI Robot" class="robot-img robot-home" id="main-robot">
+                <div class="hologram-base base-home" id="robot-base"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Floating AI Assistant -->
+    <div class="ai-assistant" id="ai-assistant">
+        <div class="assistant-bubble" id="assistant-bubble">
+            <p id="assistant-text">Hi! Ready to create a masterpiece exam?</p>
+        </div>
+        <div class="assistant-robot">
+            <div class="robot-arm"></div>
+            <div class="robot-head">
+                <div class="robot-face">
+                    <div class="robot-eyes">
+                        <div class="eye"></div>
+                        <div class="eye"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="robot-shadow"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
