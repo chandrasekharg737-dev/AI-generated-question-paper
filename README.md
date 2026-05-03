@@ -39,10 +39,14 @@ This project is a **Static Site**. To deploy it on [Render](https://render.com/)
 1. **Push your code** to a GitHub repository.
 2. **Log in to Render** and click **"New +"** -> **"Static Site"**.
 3. **Connect your GitHub repository**.
-4. **Settings**:
-   - **Build Command**: (Leave blank)
-   - **Publish Directory**: `.` (or leave blank if `index.html` is in the root)
-5. Click **"Create Static Site"**.
+4. **Environment**:
+   - Go to the **"Environment"** tab.
+   - Add `AI_API_KEY` (your real key).
+   - Add `APP_NAME` (e.g. AI Question Paper Generator).
+5. **Settings**:
+   - **Build Command**: `echo "const ENV = { AI_API_KEY: '$AI_API_KEY', APP_NAME: '$APP_NAME' };" > env.js`
+   - **Publish Directory**: `.`
+6. Click **"Create Static Site"**.
 
 ## 🤝 Contributing
 

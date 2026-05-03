@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Environment Configuration (Mocking .env behavior)
+    // Environment Configuration (Supports Render/Build Injection)
     const CONFIG = {
-        AI_API_KEY: 'your_api_key_here', // Placeholder for .env value
-        APP_NAME: 'AI Question Paper Generator'
+        AI_API_KEY: (typeof ENV !== 'undefined' && ENV.AI_API_KEY) || 'your_fallback_api_key_here',
+        APP_NAME: (typeof ENV !== 'undefined' && ENV.APP_NAME) || 'AI Question Paper Generator'
     };
 
     // DOM Elements
