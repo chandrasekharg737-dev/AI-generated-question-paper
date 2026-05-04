@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: ai-question-generator
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_VERSION
+        value: 18.0.0
+      - key: AI_API_KEY
+        sync: false # User must set this manually in Render dashboard
+      - key: APP_NAME
+        value: EduAI Question Generator

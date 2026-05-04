@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI-Based Question Paper Generator</title>
+    <title>AI-Based Question Paper Generator | EduAI</title>
+    <meta name="description" content="Generate professional, high-quality question papers in seconds using AI. Perfect for teachers and educators.">
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -169,6 +170,23 @@
                 </div>
             </div>
         </section>
+
+        <!-- History Section -->
+        <section id="history-section" class="view-section hidden">
+            <div class="glass-card">
+                <div class="card-header">
+                    <h2>Generated Papers History</h2>
+                    <p>Review and manage your past question papers.</p>
+                </div>
+                <div id="history-list" class="history-list">
+                    <!-- History items injected via JS -->
+                </div>
+                <div class="form-actions">
+                    <button type="button" id="clear-history-btn" class="secondary-btn">Clear All History</button>
+                </div>
+            </div>
+        </section>
+
         </div> <!-- End content-column -->
         
         <!-- Persistent Robot Visual -->
@@ -199,8 +217,7 @@
         </div>
     </div>
 
-    <!-- Environment Variables (Generated at Build Time) -->
-    <script src="env.js"></script>
+    <!-- Main Logic -->
     <script src="script.js"></script>
 </body>
 </html>

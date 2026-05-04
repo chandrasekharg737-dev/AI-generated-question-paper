@@ -15,10 +15,11 @@ A professional, visually stunning AI-powered platform designed to help educators
 
 ## 🛠️ Technology Stack
 
-- **Structure**: Semantic HTML5
-- **Styling**: Vanilla CSS3 (Custom Design System, Keyframe Animations, Glassmorphism)
-- **Logic**: Vanilla JavaScript (ES6+, LocalStorage API, DOM Manipulation)
-- **Deployment**: Optimized for static hosting (GitHub Pages, Render, Vercel)
+- **Frontend**: Semantic HTML5, Vanilla CSS3 (Custom Design System), Vanilla JS (ES6+)
+- **Backend**: Node.js, Express.js
+- **AI Engine**: Google Gemini 1.5 Flash (via @google/generative-ai)
+- **Security**: Environment variables via `dotenv`
+- **Deployment**: Optimized for Render (Web Service), Heroku, or any Node.js host.
 
 ## 🚀 How to Run Locally
 
@@ -26,27 +27,36 @@ A professional, visually stunning AI-powered platform designed to help educators
    ```bash
    git clone https://github.com/your-username/ai-question-generator.git
    ```
-2. Navigate to the project directory:
+2. Install dependencies:
    ```bash
-   cd ai-question-generator
+   npm install
    ```
-3. Open `index.html` in your favorite browser.
+3. Create a `.env` file in the root and add your Gemini API key:
+   ```env
+   AI_API_KEY=your_gemini_api_key_here
+   APP_NAME=EduAI Generator
+   ```
+4. Start the server:
+   ```bash
+   npm start
+   ```
+5. Open `http://localhost:3000` in your browser.
 
-## 🌐 Deployment on Render
+## 🌐 Deployment on Render (Web Service)
 
-This project is a **Static Site**. To deploy it on [Render](https://render.com/):
+This project is now a **Node.js Web Service**. To deploy it:
 
 1. **Push your code** to a GitHub repository.
-2. **Log in to Render** and click **"New +"** -> **"Static Site"**.
+2. **Log in to Render** and click **"New +"** -> **"Web Service"**.
 3. **Connect your GitHub repository**.
 4. **Environment**:
    - Go to the **"Environment"** tab.
-   - Add `AI_API_KEY` (your real key).
-   - Add `APP_NAME` (e.g. AI Question Paper Generator).
+   - Add `AI_API_KEY` (Your Google Gemini API Key).
+   - Add `APP_NAME` (e.g., AI Question Paper Generator).
 5. **Settings**:
-   - **Build Command**: `echo "const ENV = { AI_API_KEY: '$AI_API_KEY', APP_NAME: '$APP_NAME' };" > public/env.js`
-   - **Publish Directory**: `public`
-6. Click **"Create Static Site"**.
+   - **Build Command**: `npm install`
+   - **Start Command**: `node server.js`
+6. Click **"Create Web Service"**.
 
 ## 🤝 Contributing
 
