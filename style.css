@@ -265,6 +265,23 @@ body {
         align-items: center;
         text-align: center;
     }
+    
+    /* Mobile Optimization: Reduce Animation Load */
+    .cyber-grid {
+        animation: none; /* Stop moving grid on mobile */
+        opacity: 0.15;
+    }
+    .glow-orb {
+        animation-duration: 40s; /* Slower animations */
+        filter: blur(60px); /* Smaller blur */
+    }
+    .bg-robot, .bg-blob {
+        display: none !important; /* Hide background clutter on mobile */
+    }
+    .hologram-base {
+        animation: none; /* Stop pulsing base */
+        opacity: 0.5;
+    }
 }
 
 .badge {
@@ -462,7 +479,7 @@ input, select {
     color: var(--text-primary);
     padding: 1rem;
     border-radius: 0.75rem;
-    font-size: 1rem;
+    font-size: 16px;
     font-family: inherit;
     transition: all 0.3s ease;
     width: 100%;
@@ -703,41 +720,87 @@ select option {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+        padding-top: 5rem;
+    }
+
+    .glass-nav {
+        padding: 0.75rem 1.25rem;
+        top: 0.5rem;
+        width: 98%;
+    }
+
+    .nav-links {
+        gap: 0.5rem;
+    }
+
+    .nav-link {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.85rem;
+    }
+
     .form-row {
         flex-direction: column;
-        gap: 1.5rem;
+        gap: 1.25rem;
     }
     
     .results-header {
         flex-direction: column;
-        gap: 1.5rem;
+        gap: 1.25rem;
+        padding: 1.5rem;
     }
     
     .action-buttons {
-        align-self: flex-end;
+        align-self: flex-start;
+        margin-top: 0.5rem;
+    }
+
+    .persistent-visual {
+        margin-bottom: 2rem;
+    }
+
+    .robot-img {
+        max-width: 250px;
     }
 }
 
 @media (max-width: 480px) {
     .container {
-        padding: 1rem;
+        padding: 0.75rem;
+        padding-top: 4.5rem;
     }
     
     .glass-card {
-        padding: 1.5rem;
+        padding: 1.25rem;
     }
     
     .title {
-        font-size: 2rem;
+        font-size: 1.75rem;
+    }
+
+    .subtitle {
+        font-size: 1rem;
     }
     
     .form-actions {
         flex-direction: column-reverse;
+        gap: 0.75rem;
     }
     
     .form-actions button {
         width: 100%;
         justify-content: center;
+        padding: 0.875rem;
+    }
+
+    .metadata-tags {
+        gap: 0.25rem;
+    }
+
+    .tag {
+        font-size: 0.75rem;
+        padding: 0.2rem 0.5rem;
     }
 }
 

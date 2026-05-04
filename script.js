@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const navOutputLink = document.getElementById('nav-output-link');
     const historyList = document.getElementById('history-list');
     const clearHistoryBtn = document.getElementById('clear-history-btn');
+    const errorBox = document.getElementById('form-error');
 
     const assistantBubble = document.getElementById('assistant-bubble');
     const assistantText = document.getElementById('assistant-text');
@@ -34,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // State
     let currentPaper = null;
     let paperHistory = JSON.parse(localStorage.getItem('paperHistory')) || [];
+    let isProcessing = false;
 
     // Navigation Functions
     function showSection(sectionId) {
@@ -95,7 +97,9 @@ document.addEventListener('DOMContentLoaded', () => {
     startOverBtn.addEventListener('click', () => { generatorForm.reset(); showSection('generator-section'); });
 
     regenerateBtn.addEventListener('click', () => {
-        if (!currentPaper || !currentPaper.metadata) return;
+        if (!currentPaper || !currentPaper.metadata || isProcessing) return;
+        
+        isProcessing = true;
         showSection('loading-section');
         setExpression('thinking', 0);
         regenerateBtn.disabled = true;
@@ -105,30 +109,28 @@ document.addEventListener('DOMContentLoaded', () => {
             renderResults(currentPaper.metadata);
             showSection('results-section');
             regenerateBtn.disabled = false;
+            isProcessing = false;
         }, 1500);
     });
 
     generatorForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const formData = {
-            subject: document.getElementById('subject').value.trim(),
-            topic: document.getElementById('topic').value.trim(),
-            difficulty: document.getElementById('difficulty').value,
-            numQuestions: parseInt(document.getElementById('num-questions').value),
-            questionType: document.getElementById('question-type').value
+            subject: document.getElementById('subject').value.trim() || "General Knowledge",
+            topic: document.getElementById('topic').value.trim() || "Academic Fundamentals",
+            difficulty: document.getElementById('difficulty').value || "Medium",
+            numQuestions: parseInt(document.getElementById('num-questions').value) || 10,
+            questionType: document.getElementById('question-type').value || "Mixed"
         };
 
-        if (!formData.subject || !formData.topic || !formData.difficulty || !formData.numQuestions || !formData.questionType) {
-            speak("Whoops! Please fill all the details to continue.");
-            return;
-        }
-
+        errorBox.classList.add('hidden');
         showSection('loading-section');
         setExpression('thinking', 0);
-        generateBtn.disabled = true;
-
-        setTimeout(() => {
+        
+        // Immediate execution after UI update
+        requestAnimationFrame(() => {
             currentPaper = generateQuestions(formData);
+            showSection('results-section');
             renderResults(formData);
             speak("Great! Your question paper is ready.", 4000);
             
@@ -138,33 +140,83 @@ document.addEventListener('DOMContentLoaded', () => {
             
             navOutputLink.removeAttribute('disabled');
             setExpression('happy', 4000);
-            showSection('results-section');
-            generateBtn.disabled = false;
-        }, 2000);
+        });
     });
 
-    // Standalone Generation Logic (Moved from Server to Frontend)
+    // Standalone Generation Logic (Offline-ready template engine)
     function generateQuestions(data) {
         const { subject, topic, difficulty, numQuestions, questionType } = data;
         const questions = [];
-        const templates = {
-            'MCQ': [`Role of ${topic} in ${subject}?`, `Key component of ${topic}?`, `Management of ${topic}?`, `Optimization of ${topic}?`, `Variable affecting ${topic}?`],
-            'Short': [`Principles of ${topic} in ${subject}?`, `Approaches to ${topic}?`, `Lifecycle of ${topic}?`, `Success factors for ${topic}?`, `Impact of ${topic} on ${subject}?`],
-            'Long': [`Evaluation of ${topic} in ${subject}`, `Strategy for ${topic}`, `Impact analysis of ${topic}`, `Proof of ${topic} efficiency`, `Future of ${topic}`],
-            'TF': [`${topic} is the standard in ${subject}`, `${topic} reduces overhead`, `${topic} is modern`, `${topic} needs hardware`, `${topic} is secure`]
+        
+        const pools = {
+            'MCQ': [
+                "Which of the following best describes the core function of {topic} in the context of {subject}?",
+                "Identify the primary advantage of utilizing {topic} over traditional methods in {subject}.",
+                "When implementing {topic}, which of the following variables is considered most critical?",
+                "According to standard {subject} protocols, what is the first step in {topic} optimization?",
+                "Which theoretical model best supports the use of {topic} for {subject} efficiency?",
+                "Identify the common pitfall when integrating {topic} into a {subject} workflow.",
+                "Which component of {topic} is responsible for its most significant impact on {subject}?"
+            ],
+            'Short': [
+                "Explain the fundamental principles that govern {topic} within {subject}.",
+                "Compare and contrast two major approaches to {topic} as discussed in {subject} literature.",
+                "Describe the lifecycle of {topic} and identify its most complex phase.",
+                "What are the three key performance indicators (KPIs) for {topic} in {subject}?",
+                "Briefly outline how {topic} has evolved with the recent advancements in {subject}.",
+                "Discuss the ethical implications of using {topic} within a {subject} environment.",
+                "How does the difficulty of {topic} implementation change across different {subject} scales?"
+            ],
+            'Long': [
+                "Provide a comprehensive critical analysis of {topic}. Discuss its historical roots in {subject}, current state-of-the-art applications, and potential future trajectories.",
+                "Design a detailed framework for a project that utilizes {topic} to solve a chronic problem in {subject}. Justify your choices with academic evidence.",
+                "Synthesize a new model that combines {topic} with emerging technologies in {subject}. Evaluate the potential risks and rewards of this synthesis.",
+                "Critically evaluate the statement: '{topic} is the most significant development in {subject} in the last decade.' Use examples to support your argument.",
+                "Draft a technical report on the efficiency of {topic} in large-scale {subject} systems, focusing on resource allocation and bottleneck management."
+            ],
+            'TF': [
+                "True or False: {topic} is universally considered a prerequisite for advanced {subject} mastery.",
+                "True or False: The implementation of {topic} in {subject} always leads to a linear increase in performance.",
+                "True or False: Historical data suggests that {topic} was first applied to {subject} by accident.",
+                "True or False: Modern {subject} standards require {topic} to be audited at least once per fiscal year.",
+                "True or False: {topic} and its related sub-systems are entirely independent of {subject} environmental factors."
+            ]
+        };
+
+        const prefixes = {
+            'Easy': ["Recall", "State", "Identify", "List", "Summarize"],
+            'Medium': ["Analyze", "Explain", "Compare", "Illustrate", "Demonstrate"],
+            'Hard': ["Critically evaluate", "Synthesize", "Defend", "Formulate a proof for", "Deconstruct"]
         };
 
         for (let i = 0; i < numQuestions; i++) {
-            let type = questionType === 'Mixed' ? ['MCQ', 'Short', 'Long', 'TF'][i % 4] : 
-                       ({ 'Multiple Choice (MCQ)': 'MCQ', 'Short Answer': 'Short', 'Long Essay': 'Long', 'True / False': 'TF' }[questionType] || 'Short');
+            let type;
+            if (questionType === 'Mixed') {
+                const types = ['MCQ', 'Short', 'Long', 'TF'];
+                type = types[i % 4];
+            } else {
+                const map = { 'Multiple Choice (MCQ)': 'MCQ', 'Short Answer': 'Short', 'Long Essay': 'Long', 'True / False': 'TF' };
+                type = map[questionType] || 'Short';
+            }
             
-            let rawText = templates[type][i % 5];
-            let baseMarks = type === 'MCQ' || type === 'TF' ? 1 : (type === 'Short' ? 3 : 10);
+            const pool = pools[type];
+            let rawText = pool[i % pool.length];
+            let text = rawText.replace(/{topic}/g, topic).replace(/{subject}/g, subject);
+            
+            // Add difficulty-based flavor
+            const prefix = prefixes[difficulty][i % prefixes[difficulty].length];
+            if (type !== 'TF' && type !== 'MCQ') {
+                text = `${prefix}: ${text}`;
+            }
+
+            const baseMarks = type === 'MCQ' || type === 'TF' ? 1 : (type === 'Short' ? 5 : 15);
+            const markMultiplier = difficulty === 'Hard' ? 1.5 : (difficulty === 'Easy' ? 0.8 : 1);
+            
             questions.push({
                 id: i + 1,
-                text: `${difficulty} Level: ${rawText}`,
-                answer: `Model answer for ${topic} at ${difficulty} level.`,
-                marks: difficulty === 'Hard' ? Math.ceil(baseMarks * 1.5) : (difficulty === 'Easy' ? Math.max(1, Math.floor(baseMarks * 0.8)) : baseMarks),
+                text: text,
+                answer: `[Model Answer for ${topic}] A detailed response should address the specific nuances of ${topic} within ${subject}, focusing on ${difficulty}-level accuracy.`,
+                marks: Math.ceil(baseMarks * markMultiplier),
                 type: type
             });
         }
@@ -243,11 +295,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function speak(text, duration = 5000) {
         if (!assistantText || !assistantBubble) return;
+        
+        // Clear existing timeouts to prevent animation overlap
+        if (assistantBubble.speakTimeout) clearTimeout(assistantBubble.speakTimeout);
+        if (assistantBubble.hideTimeout) clearTimeout(assistantBubble.hideTimeout);
+        
         assistantBubble.classList.remove('show');
-        setTimeout(() => {
+        
+        assistantBubble.speakTimeout = setTimeout(() => {
             assistantText.textContent = text;
             assistantBubble.classList.add('show');
-            setTimeout(() => assistantBubble.classList.remove('show'), duration);
+            
+            assistantBubble.hideTimeout = setTimeout(() => {
+                assistantBubble.classList.remove('show');
+            }, duration);
         }, 100);
     }
 
@@ -259,9 +320,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (dur > 0) setTimeout(() => robotFace.className = 'robot-face', dur);
     }
 
-    document.addEventListener('mousemove', (e) => {
-        const x = (e.clientX / window.innerWidth - 0.5) * 20;
-        const y = (e.clientY / window.innerHeight - 0.5) * 20;
-        document.querySelectorAll('.glow-orb, .bg-robot').forEach(el => el.style.transform = `translate(${x}px, ${y}px)`);
-    });
+    // Mouse Parallax Effect (Disabled on touch devices for stability)
+    if (window.matchMedia("(pointer: fine)").matches) {
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth - 0.5) * 20;
+            const y = (e.clientY / window.innerHeight - 0.5) * 20;
+            document.querySelectorAll('.glow-orb, .bg-robot').forEach(el => el.style.transform = `translate(${x}px, ${y}px)`);
+        });
+    }
 });
