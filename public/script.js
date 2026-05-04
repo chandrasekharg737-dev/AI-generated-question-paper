@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const startBtn = document.getElementById('start-btn');
     const backToHomeBtn = document.getElementById('back-to-home');
     const generatorForm = document.getElementById('generator-form');
+    const generateBtn = document.getElementById('generate-btn');
     const startOverBtn = document.getElementById('start-over-btn');
     const regenerateBtn = document.getElementById('regenerate-btn');
     const copyBtn = document.getElementById('copy-btn');
@@ -131,8 +132,10 @@ document.addEventListener('DOMContentLoaded', () => {
     regenerateBtn.addEventListener('click', () => {
         if (!currentPaper || !currentPaper.metadata) return;
         
+        
         showSection('loading-section');
         setExpression('thinking', 0);
+        regenerateBtn.disabled = true;
         
         fetchQuestions(currentPaper.metadata)
             .then(paper => {
@@ -144,6 +147,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error(error);
                 showSection('results-section');
                 speak("Regeneration failed. Keeping the current paper.");
+            })
+            .finally(() => {
+                regenerateBtn.disabled = false;
             });
     });
 
@@ -182,12 +188,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // Show loading state
         showSection('loading-section');
         setExpression('thinking', 0);
+        generateBtn.disabled = true;
 
-        // Call backend API
+        // Call backend API (Runs exactly once per click)
         fetchQuestions(formData)
             .then(paper => {
                 currentPaper = paper;
                 renderResults(formData);
+                
+                // Silent success (removed fallback warning)
+                speak("Great! Your question paper is ready.", 4000);
                 
                 // Save to history
                 const historyItem = {
@@ -207,9 +217,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error(error);
                 showSection('generator-section');
                 const errorBox = document.getElementById('form-error');
-                errorBox.textContent = "❌ Failed to generate. Check your internet or API key.";
+                errorBox.textContent = "❌ An unexpected error occurred. Please try again.";
                 errorBox.classList.remove('hidden');
-                speak("I'm sorry, I encountered an error. Please try again later.");
+                speak("I'm sorry, I encountered a technical glitch. Let's try that again.");
+            })
+            .finally(() => {
+                generateBtn.disabled = false;
             });
     });
 
@@ -286,7 +299,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 </ul>
             </div>
         `;
-        
+    }
+    
         currentPaper.questions.forEach((q, index) => {
             const delay = index * 0.05; // Staggered animation
             

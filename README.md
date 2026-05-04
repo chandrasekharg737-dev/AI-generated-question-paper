@@ -15,48 +15,28 @@ A professional, visually stunning AI-powered platform designed to help educators
 
 ## 🛠️ Technology Stack
 
-- **Frontend**: Semantic HTML5, Vanilla CSS3 (Custom Design System), Vanilla JS (ES6+)
-- **Backend**: Node.js, Express.js
-- **AI Engine**: Google Gemini 1.5 Flash (via @google/generative-ai)
-- **Security**: Environment variables via `dotenv`
-- **Deployment**: Optimized for Render (Web Service), Heroku, or any Node.js host.
+- **Frontend**: Semantic HTML5, Vanilla CSS3, Vanilla JS
+- **Backend**: Node.js, Express.js (Minimalist)
+- **Logic Engine**: Standalone Template Generator
+- **Deployment**: Optimized for Render, Heroku, or any Node.js host.
 
 ## 🚀 How to Run Locally
 
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/your-username/ai-question-generator.git
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Create a `.env` file in the root and add your Gemini API key:
-   ```env
-   AI_API_KEY=your_gemini_api_key_here
-   APP_NAME=EduAI Generator
-   ```
-4. Start the server:
-   ```bash
-   npm start
-   ```
-5. Open `http://localhost:3000` in your browser.
+1. Install dependencies: `npm install`
+2. Start the server: `npm start`
+3. Open `http://localhost:10000` in your browser.
 
 ## 🌐 Deployment on Render (Web Service)
 
-This project is now a **Node.js Web Service**. To deploy it:
+This project is a **Node.js Web Service**. To deploy it:
 
 1. **Push your code** to a GitHub repository.
 2. **Log in to Render** and click **"New +"** -> **"Web Service"**.
 3. **Connect your GitHub repository**.
-4. **Environment**:
-   - Go to the **"Environment"** tab.
-   - Add `AI_API_KEY` (Your Google Gemini API Key).
-   - Add `APP_NAME` (e.g., AI Question Paper Generator).
-5. **Settings**:
+4. **Settings**:
    - **Build Command**: `npm install`
    - **Start Command**: `node server.js`
-6. Click **"Create Web Service"**.
+5. Click **"Create Web Service"**.
 
 ## 🤝 Contributing
 
